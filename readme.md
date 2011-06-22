@@ -13,4 +13,4 @@ Source-code:
 https://github.com/titoBouzout/komodo-tab-multiple-handler
 
 Home-page:
-http://community.activestate.com/node/6826
+http://community.activestate.com/node/6830
