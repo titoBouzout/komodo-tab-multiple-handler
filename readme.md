@@ -8,29 +8,35 @@ Usage is very simple, you just click and hold your mouse a little bit, the selec
 
 Version-changes:
 
-<ul> 0.1 - 
-<br/>https://github.com/titoBouzout/komodo-tab-multiple-handler/tree/0.1
-<br/>http://community.activestate.com/files/tabMultipleHandler_0.xpi
-  <li> Fix style for selected tabs on linux.
-  <li> Allows select tabs from multiples browsers (tabbedViews)
-  <li> Adds API:
-  <javascript>
-	//will return an array with the view object of the selected tabs.
-	var selectedViewsObjects = titoTMH.getSelectedTabs()
-	
-	//will return an array with the view object of the non-selected tabs.
-	//this will return "other tabs" from same browser (tabbedView) if the selected tabs comes from only one view.
-	//this will return "other tabs" from all browsers (tabbedViews) if the selected tabs comes from many browsers
-	var nonSelectedViewsObjects = titoTMH.getNonSelectedTabs()
-  </javascript>
-</ul>
+<ul><!-- root node -->
 
+<li> 0.1 - 
+  <br/>https://github.com/titoBouzout/komodo-tab-multiple-handler/tree/0.1
+  <br/>http://community.activestate.com/files/tabMultipleHandler_0.xpi
 
-<ul> 0 - 
-<br/>https://github.com/titoBouzout/komodo-tab-multiple-handler/tree/fce239958f90c8721f2cc9613b31acc86c5b4ef4
+  <ul>
+	<li> Fix style for selected tabs on linux.
+	<li> Allows select tabs from multiples browsers (tabbedViews)
+	<li> Adds API:
+	<javascript>
+//will return an array with the view object of the selected tabs.
+var selectedViewsObjects = titoTMH.getSelectedTabs()
+
+//will return an array with the view object of the non-selected tabs.
+//this will return "other tabs" from same browser (tabbedView) if the selected tabs comes from only one view.
+//this will return "other tabs" from all browsers (tabbedViews) if the selected tabs comes from many browsers
+var nonSelectedViewsObjects = titoTMH.getNonSelectedTabs()
+	</javascript>
+  </ul>
+  
+  <li> 0 - 
+	<br/>https://github.com/titoBouzout/komodo-tab-multiple-handler/tree/fce239958f90c8721f2cc9613b31acc86c5b4ef4
 <br/>http://community.activestate.com/files/tabMultipleHandler.xpi
-  <li>Initial release
-</ul>
+  <ul>
+	  <li>Initial release
+  </ul>
+
+</ul><!-- end root node -->
 
 
 
