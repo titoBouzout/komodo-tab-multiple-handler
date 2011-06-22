@@ -6,7 +6,7 @@
     <Description about="urn:mozilla:install-manifest">
         <em:id>tito@tabmultiplehandler</em:id>
         <em:name>Tab Multiple Handler</em:name>
-        <em:version>0</em:version>
+        <em:version>0.1</em:version>
         <em:description>Adds the ability to close and save mutliples tabs at once.</em:description>
         <em:creator>Tito Bouzout</em:creator>
 		<em:homepageURL>https://github.com/titoBouzout/komodo-multiple-handler</em:homepageURL>
