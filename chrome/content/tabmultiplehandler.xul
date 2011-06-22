@@ -7,82 +7,78 @@
 		improvements more than welcome please submit these to github, regards
 	  */
 	  
-		var titoTabMultipleHandler = {
-		
-		  allowSelection:false,
-		  allowSelectionTimer : false,
+		var titoTMH = {
 		  
-		  lastSelectedTab :false,
-		  selection: [],
+		  _allowSelectionTimer :false,
+		  _selection: [],
 		  
 		  load:function()
 		  {
-			removeEventListener('load', titoTabMultipleHandler.load, false);
-	  		document.addEventListener('mouseup', titoTabMultipleHandler.mouseup, true);
-			document.getElementById('tabbed-view').addEventListener('mousedown', titoTabMultipleHandler.mousedown, true);
+			removeEventListener('load', titoTMH.load, false);
+	  		document.addEventListener('mouseup', titoTMH._mouseup, true);
+			titoTMH._el('topview').addEventListener('mousedown', titoTMH._mousedown, true);
 		  },
 		  unload:function()
 		  {
-			document.removeEventListener('mouseup', titoTabMultipleHandler.mouseup, true);
-			document.getElementById('tabbed-view').removeEventListener('mousedown', titoTabMultipleHandler.mousedown, true);
+			document.removeEventListener('mouseup', titoTMH._mouseup, true);
+			titoTMH._el('topview').removeEventListener('mousedown', titoTMH._mousedown, true);
 		  },
-		  mousedown:function(aEvent)
+		  _mousedown:function(aEvent)
 		  {
 			if(aEvent.button != 0 || aEvent.originalTarget.tagName == 'html:embed'){}
 			else
 			{
-			  var tab = titoTabMultipleHandler.getTab(aEvent.originalTarget);
+			  var tab = titoTMH._getTab(aEvent.originalTarget);
 			  if(tab)
 			  {
 				//after some mseconds wihtout moving the mouse: cancel all drag events, listeng mousemove and select hovered tabs
-				titoTabMultipleHandler.allowSelectionTimer = setTimeout(function(){ titoTabMultipleHandler.selectingStart();}, 220);
-				document.addEventListener('mousemove', titoTabMultipleHandler.selectingCancel, true);
-				titoTabMultipleHandler.selectedFirstTab = tab;
-				titoTabMultipleHandler.selection = [];
+				titoTMH._allowSelectionTimer = setTimeout(function(){ titoTMH._selectingStart();}, 220);
+				document.addEventListener('mousemove', titoTMH._selectingCancel, true);
+				titoTMH._selectedFirstTab = tab;
+				titoTMH._selection = [];
 			  }
 			}
 		  },
-		  selectingStart:function()
+		  _selectingCancel:function()
 		  {
-			if(titoTabMultipleHandler.selectedFirstTab)
+			try{clearTimeout(titoTMH._allowSelectionTimer);}catch(e){}
+			document.removeEventListener('mousemove', titoTMH._selectingCancel, true);
+		  },
+		  _selectingStart:function()
+		  {
+			if(titoTMH._selectedFirstTab)
 			{
-			  titoTabMultipleHandler.selectedFirstTab.setAttribute('tab-multiple-handler-selected', true);
-			  titoTabMultipleHandler.lastSelectedTab = titoTabMultipleHandler.selectedFirstTab;
-			  titoTabMultipleHandler.selection[titoTabMultipleHandler.selection.length] = titoTabMultipleHandler.selectedFirstTab;
+			  titoTMH._selectedFirstTab.setAttribute('tab-multiple-handler-selected', true);
+			  titoTMH._lastSelectedTab = titoTMH._selectedFirstTab;
+			  titoTMH._selection[titoTMH._selection.length] = titoTMH._selectedFirstTab;
 			}
 			
-			document.removeEventListener('mousemove', titoTabMultipleHandler.selectingCancel, true);
-			document.getElementById('tabbed-view').addEventListener('mousemove', titoTabMultipleHandler.selectingSelect, true);
-			titoTabMultipleHandler.eventsStop();
-			titoTabMultipleHandler.allowSelection = true;
+			document.removeEventListener('mousemove', titoTMH._selectingCancel, true);
+			titoTMH._el('topview').addEventListener('mousemove', titoTMH._selectingSelect, true);
+			titoTMH._eventsStop();
 		  },
-		  selectingCancel:function()
-		  {
-			titoTabMultipleHandler.allowSelection = false;
-			try{clearTimeout(titoTabMultipleHandler.allowSelectionTimer);}catch(e){}
-			document.removeEventListener('mousemove', titoTabMultipleHandler.selectingCancel, true);
-		  },
-		  selectingSelect:function(aEvent)
+
+		  _selectingSelect:function(aEvent)
 		  {
 			if(aEvent.button != 0 || aEvent.originalTarget.tagName == 'html:embed'){}
 			else
 			{
 			  aEvent.preventDefault();
 			  aEvent.stopPropagation();
-			  var tab = titoTabMultipleHandler.getTab(aEvent.originalTarget);
+			  var tab = titoTMH._getTab(aEvent.originalTarget);
 			  if(tab)
 			  {
-				if(tab != titoTabMultipleHandler.lastSelectedTab)
+				if(tab != titoTMH._lastSelectedTab)
 				{
-				  titoTabMultipleHandler.lastSelectedTab = tab;
+				  titoTMH._lastSelectedTab = tab;
 				  if(tab.hasAttribute('tab-multiple-handler-selected'))
 				  {
 					tab.removeAttribute('tab-multiple-handler-selected')
-					for(var id in  titoTabMultipleHandler.selection)
+					for(var id in  titoTMH._selection)
 					{
-					  if(titoTabMultipleHandler.selection[id] == tab)
+					  if(titoTMH._selection[id] == tab)
 					  {
-						titoTabMultipleHandler.selection[id] = null;
+						titoTMH._selection[id] = null;
 						break;
 					  }
 					}
@@ -90,27 +86,27 @@
 				  else
 				  {
 					tab.setAttribute('tab-multiple-handler-selected', true)
-					 titoTabMultipleHandler.selection[titoTabMultipleHandler.selection.length] = tab;
+					titoTMH._selection[titoTMH._selection.length] = tab;
 				  }
 				}
 			  }
 			  else
 			  {
-				 titoTabMultipleHandler.lastSelectedTab = false;
+				titoTMH._lastSelectedTab = false;
 			  }
 			}
 		  },
-		  mouseup:function(aEvent)
+		  _mouseup:function(aEvent)
 		  {
-			titoTabMultipleHandler.eventsAllow();
-			try{clearTimeout(titoTabMultipleHandler.allowSelectionTimer);}catch(e){}
-			document.getElementById('tabbed-view').removeEventListener('mousemove', titoTabMultipleHandler.selectingSelect, true);
+			titoTMH._eventsAllow();
+			try{clearTimeout(titoTMH._allowSelectionTimer);}catch(e){}
+			titoTMH._el('topview').removeEventListener('mousemove', titoTMH._selectingSelect, true);
 			
-			if(titoTabMultipleHandler.selection.length)
+			if(titoTMH._selection.length)
 			{
 			  if(
 				 aEvent.originalTarget.parentNode &&
-				 aEvent.originalTarget.parentNode != document.getElementById('titoTabMultipleHandler')
+				 aEvent.originalTarget.parentNode != titoTMH._el('titoTMH')
 			  )
 			  {
 				aEvent.stopPropagation();
@@ -118,59 +114,55 @@
 			  }
 			  
 			  var someDirty = 0;
-			  for(var id in titoTabMultipleHandler.selection)
+			  for(var id in titoTMH._selection)
 			  {
-				if(!titoTabMultipleHandler.selection[id])
+				if(!titoTMH._selection[id])
 				  continue;
 				
-				if(titoTabMultipleHandler.selection[id].getAttribute('clean') == 'false')
+				if(titoTMH._selection[id].getAttribute('clean') == 'false')
 				{
 				  someDirty++;
 				}
 			  }
 			  if(someDirty > 0)
-				document.getElementById('titoTabMultipleHandler').lastChild.removeAttribute('disabled');
+				titoTMH._el('titoTMH').lastChild.removeAttribute('disabled');
 			  else
-				document.getElementById('titoTabMultipleHandler').lastChild.setAttribute('disabled', true);
+				titoTMH._el('titoTMH').lastChild.setAttribute('disabled', true);
 			  
-			  if(ko.views.manager.topView.getDocumentViews(true).length != titoTabMultipleHandler.selection.length)
-				document.getElementById('titoTabMultipleHandler').firstChild.nextSibling.removeAttribute('disabled');
-			  else
-				document.getElementById('titoTabMultipleHandler').firstChild.nextSibling.setAttribute('disabled', true);
-				
-			  
-			  if(ko.views.manager.topView.getDocumentViews(true).length - titoTabMultipleHandler.selection.length == 1)
-				document.getElementById('titoTabMultipleHandler').firstChild.nextSibling.setAttribute('label', 'Close the other tab');
-			  else
-				document.getElementById('titoTabMultipleHandler').firstChild.nextSibling.setAttribute('label', 'Close other tabs');
-				
-			  if(titoTabMultipleHandler.selection.length == 1)
-				document.getElementById('titoTabMultipleHandler').firstChild.setAttribute('label', 'Close the tab');
-			  else
-				document.getElementById('titoTabMultipleHandler').firstChild.setAttribute('label', 'Close selected tabs');
-				
 			  if(someDirty == 1)
-				document.getElementById('titoTabMultipleHandler').lastChild.setAttribute('label', 'Save the tab');
+				titoTMH._el('titoTMH').lastChild.setAttribute('label', 'Save the tab');
 			  else
-				document.getElementById('titoTabMultipleHandler').lastChild.setAttribute('label', 'Save selected tabs');
+				titoTMH._el('titoTMH').lastChild.setAttribute('label', 'Save selected tabs');
 				
-			  
-			  
-			  
-			  document.getElementById('titoTabMultipleHandler')
-						  .openPopupAtScreen(aEvent.screenX, aEvent.screenY, true);
+			  var nonSelectedTabs = titoTMH.getNonSelectedTabs();
+			  if(nonSelectedTabs.length)
+				titoTMH._el('titoTMH').firstChild.nextSibling.removeAttribute('disabled');
+			  else
+				titoTMH._el('titoTMH').firstChild.nextSibling.setAttribute('disabled', true);
+				
+			  if(nonSelectedTabs.length == 1)
+				titoTMH._el('titoTMH').firstChild.nextSibling.setAttribute('label', 'Close the other tab');
+			  else
+				titoTMH._el('titoTMH').firstChild.nextSibling.setAttribute('label', 'Close other tabs');
+				
+			  if(titoTMH._selection.length == 1)
+				titoTMH._el('titoTMH').firstChild.setAttribute('label', 'Close the tab');
+			  else
+				titoTMH._el('titoTMH').firstChild.setAttribute('label', 'Close selected tabs');
+
+			  titoTMH._el('titoTMH').openPopupAtScreen(aEvent.screenX, aEvent.screenY, true);
 			}
 		  },
 		  
 		  clearSelection:function()
 		  {
-			for(var id in titoTabMultipleHandler.selection)
+			for(var id in titoTMH._selection)
 			{
-			  if(!titoTabMultipleHandler.selection[id])
+			  if(!titoTMH._selection[id])
 				continue;
-			  titoTabMultipleHandler.selection[id].removeAttribute('tab-multiple-handler-selected');
+			  titoTMH._selection[id].removeAttribute('tab-multiple-handler-selected');
 			}
-			titoTabMultipleHandler.selection = [];
+			titoTMH._selection = [];
 		  },
 		  onCommand:function(aElement)
 		  {
@@ -178,96 +170,155 @@
 			
 			switch(aCommand)
 			{
-			  
 			  case 'close' :
 				{
-				  for(var id in titoTabMultipleHandler.selection)
-				  {
-					if(!titoTabMultipleHandler.selection[id])
-					  continue;
-					try{
-					  ko.views.manager.getViewForURI(titoTabMultipleHandler.selection[id].getAttribute('tooltiptext')).close();
-					}
-					catch(e){
-					  ko.views.manager.getUntitledView(titoTabMultipleHandler.selection[id].getAttribute('tooltiptext')).close();
-					}
-				  }
-				  break;
-				}
-			  case 'close-others' :
-				{
-				  var views = ko.views.manager.topView.getDocumentViews(true);
-				  var toClose = [];
+				  var views = titoTMH.getSelectedTabs();
 				  
 				  for(var i=0;i<views.length;i++)
-				  {
-					var found = false;
-					for(var id in titoTabMultipleHandler.selection)
-					{
-					   if(!titoTabMultipleHandler.selection[id])
-		 				continue;
-
-					  if(titoTabMultipleHandler.selection[id].getAttribute('tooltiptext') ==  titoTabMultipleHandler.document(views[i]).displayPath)
-					  {
-						found = true;
-						break;
-					  }
-					}
-					if(!found)
-					  toClose[toClose.length] = views[i];
-				  }
-				  for(var id in toClose)
-				  {
-					toClose[id].close();
-				  }
+					views[i].close();
+				  
 				  break;
 				}
 			  case 'save' :
 				{
-				  for(var id in titoTabMultipleHandler.selection)
-				  {
-					if(!titoTabMultipleHandler.selection[id])
-					  continue;
-					try{
-					  ko.views.manager.getViewForURI(titoTabMultipleHandler.selection[id].getAttribute('tooltiptext')).save();
-					}
-					catch(e){
-					  ko.views.manager.getUntitledView(titoTabMultipleHandler.selection[id].getAttribute('tooltiptext')).save();
-					}
-				  }
+				  var views = titoTMH.getSelectedTabs();
+				  
+				  for(var i=0;i<views.length;i++)
+					views[i].save();
+				  
 				  break;
 				}
-			  case 'your-command-welcomed-here' :
+			  case 'close-others' :
+				{
+				  var views = titoTMH.getNonSelectedTabs();
+				  
+				  for(var i=0;i<views.length;i++)
+					views[i].close();
+					
+				  break;
+				}
+			  case 'your-command-welcome-here' :
 				{
 				  break;
 				}
 			}
-			titoTabMultipleHandler.clearSelection();
+			titoTMH.clearSelection();
 		  },
-		  eventsStop:function()
+		  //returns an array with the views of the selected tabs
+		  getSelectedTabs:function()
 		  {
-			document.getElementById('tabbed-view').addEventListener('dragstart', titoTabMultipleHandler.eventStop, true);
-			document.getElementById('tabbed-view').addEventListener('dragover', titoTabMultipleHandler.eventStop, true);
-			document.getElementById('tabbed-view').addEventListener('dragenter', titoTabMultipleHandler.eventStop, true);
-			document.getElementById('tabbed-view').addEventListener('drop', titoTabMultipleHandler.eventStop, true);
-			document.getElementById('tabbed-view').addEventListener('dragdrop', titoTabMultipleHandler.eventStop, true);
-			document.getElementById('tabbed-view').addEventListener('dragexit', titoTabMultipleHandler.eventStop, true);
+			var views = ko.views.manager.topView.getDocumentViews(true);
+			var tabs = [];
+			
+			for(var i=0;i<views.length;i++)
+			{
+			  var uid = views[i].uid;
+			  for(var id in titoTMH._selection)
+			  {
+				if(!titoTMH._selection[id])
+				  continue;
+
+				if(
+					//is this tab from the current browser/splited?
+					titoTMH._selection[id].parentNode.parentNode.parentNode.id.replace('view-', '') ==
+					views[i].tabbedViewId
+					&&
+					(
+					  //unfortunately these uids will never match
+					  titoTMH._selection[id].getAttribute('id') == uid
+					  ||
+					  titoTMH._selection[id].getAttribute('tooltiptext') ==
+					  titoTMH._document(views[i]).displayPath
+				   )
+				)
+				{
+				  tabs[tabs.length] = views[i];
+				  break;
+				}
+			  }
+			}
+			return tabs;
 		  },
-		  eventsAllow:function()
+		  //returns an array with the views of the NON-selected tabs
+		  //the array will contain all the non-selected tabs from all the views if the selection comes from multiples browsers.
+		  //the array will contain all the non-selected tabs from the current browser if the selection comes from only one browser.
+		  getNonSelectedTabs:function()
 		  {
-			document.getElementById('tabbed-view').removeEventListener('dragstart', titoTabMultipleHandler.eventStop, true);
-			document.getElementById('tabbed-view').removeEventListener('dragover', titoTabMultipleHandler.eventStop, true);
-			document.getElementById('tabbed-view').removeEventListener('dragenter', titoTabMultipleHandler.eventStop, true);
-			document.getElementById('tabbed-view').removeEventListener('drop', titoTabMultipleHandler.eventStop, true);
-			document.getElementById('tabbed-view').removeEventListener('dragdrop', titoTabMultipleHandler.eventStop, true);
-			document.getElementById('tabbed-view').removeEventListener('dragexit', titoTabMultipleHandler.eventStop, true);
+			//this holds if the selected tabs comes from multiples splited views.
+			//this is saved for example to allow the command "close other tabs" only close tabs from same browser/splited view.
+			var mixedBrowsers = false;
+			var selectedBrowser = 0; // in case the selection come from one browser.
+			var browsers = '';
+			for(var id in titoTMH._selection)
+			{
+			  if(!titoTMH._selection[id])
+				continue;
+			  browsers += titoTMH._selection[id].parentNode.parentNode.parentNode.id.replace('view-', '');
+			}
+			
+			if(browsers.indexOf('1') != -1 && browsers.indexOf('2') != -1)
+			  mixedBrowsers = true;
+			else
+			{
+			  if(browsers.indexOf('1') != -1)
+				selectedBrowser = 1;
+			  else
+				selectedBrowser = 2;
+			}
+			
+			var tabs = [];
+			var selectedTabs = titoTMH.getSelectedTabs();
+			var views = ko.views.manager.topView.getDocumentViews(true);
+			for(var i=0;i<views.length;i++)
+			{
+			  var uid = views[i].uid;
+			  var found = false;
+			  
+			  if(selectedTabs.indexOf(views[i]) != -1)
+			  {
+				found = true;
+			  }
+			  else
+			  {
+				if(mixedBrowsers)
+				{
+				  
+				}
+				else if(views[i].tabbedViewId != selectedBrowser)
+				{
+				  found = true;
+				}
+			  }
+			  
+			  if(!found)
+				tabs[tabs.length] = views[i];
+			}
+			return tabs;
 		  },
-		  eventStop:function(aEvent)
+		  _eventsStop:function()
+		  {
+			titoTMH._el('topview').addEventListener('dragstart', titoTMH._eventStop, true);
+			titoTMH._el('topview').addEventListener('dragover', titoTMH._eventStop, true);
+			titoTMH._el('topview').addEventListener('dragenter', titoTMH._eventStop, true);
+			titoTMH._el('topview').addEventListener('drop', titoTMH._eventStop, true);
+			titoTMH._el('topview').addEventListener('dragdrop', titoTMH._eventStop, true);
+			titoTMH._el('topview').addEventListener('dragexit', titoTMH._eventStop, true);
+		  },
+		  _eventsAllow:function()
+		  {
+			titoTMH._el('topview').removeEventListener('dragstart', titoTMH._eventStop, true);
+			titoTMH._el('topview').removeEventListener('dragover', titoTMH._eventStop, true);
+			titoTMH._el('topview').removeEventListener('dragenter', titoTMH._eventStop, true);
+			titoTMH._el('topview').removeEventListener('drop', titoTMH._eventStop, true);
+			titoTMH._el('topview').removeEventListener('dragdrop', titoTMH._eventStop, true);
+			titoTMH._el('topview').removeEventListener('dragexit', titoTMH._eventStop, true);
+		  },
+		  _eventStop:function(aEvent)
 		  {
 			aEvent.stopPropagation();
 			aEvent.preventDefault();
 		  },
-		  getTab:function(aNode)
+		  _getTab:function(aNode)
 		  {
 			try
 			{
@@ -291,24 +342,27 @@
 			  return false;
 			}
 		  },
-		  document:function(aTab)
+		  _document:function(aTab)
 		  {
 			return aTab.document || aTab.koDoc;
+		  },
+		  _el:function(aElement)
+		  {
+			return document.getElementById(aElement);
 		  }
 		};
   
-		addEventListener('load', titoTabMultipleHandler.load, false);
-		addEventListener('unload', titoTabMultipleHandler.unload, false);
+		addEventListener('load', titoTMH.load, false);
+		addEventListener('unload', titoTMH.unload, false);
 	  ]]>
 	</script>
 	
 	<popupset id="extensionPopupSet">
-	  <menupopup id="titoTabMultipleHandler"
-				 onpopuphidden="titoTabMultipleHandler.clearSelection(this)">
-		<menuitem label="Close selected tabs" action="close" oncommand="titoTabMultipleHandler.onCommand(this)"/>
-		<menuitem label="Close other tabs" action="close-others" oncommand="titoTabMultipleHandler.onCommand(this)"/>
+	  <menupopup id="titoTMH" onpopuphidden="titoTMH.clearSelection(this)">
+		<menuitem label="Close selected tabs" action="close" oncommand="titoTMH.onCommand(this)"/>
+		<menuitem label="Close other tabs" action="close-others" oncommand="titoTMH.onCommand(this)"/>
 		<menuseparator/>
-		<menuitem label="Save selected tabs" action="save" oncommand="titoTabMultipleHandler.onCommand(this)"/>
+		<menuitem label="Save selected tabs" action="save" oncommand="titoTMH.onCommand(this)"/>
 	  </menupopup>
 	</popupset>
 

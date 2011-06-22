@@ -2,3 +2,6 @@ content tabmultiplehandler chrome/content/
 
 overlay chrome://komodo/content/komodo.xul chrome://tabmultiplehandler/content/tabmultiplehandler.xul
 style chrome://komodo/content/komodo.xul chrome://tabmultiplehandler/content/tabmultiplehandler.css
+
+#https://developer.mozilla.org/en/OS_TARGET
+style chrome://komodo/content/komodo.xul chrome://tabmultiplehandler/content/tabmultiplehandler-linux.css os=linux

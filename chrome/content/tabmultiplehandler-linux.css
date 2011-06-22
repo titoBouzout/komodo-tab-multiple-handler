@@ -1,0 +1,22 @@
+
+tab[tab-multiple-handler-selected],
+tab[tab-multiple-handler-selected] > *,
+tab[tab-multiple-handler-selected] > * > *,
+tab[tab-multiple-handler-selected] > * > * > *,
+tab[tab-multiple-handler-selected] > * > * > * > *
+{
+  color:HighlightText !important;
+  
+  background-color:Highlight !important;
+  
+  border-bottom-color:Highlight !important;
+  border-left-color:Highlight !important;
+  border-top-color:Highlight !important;
+  border-right-color:Highlight !important;
+  
+  -moz-border-end-color:Highlight !important;
+  -moz-border-start-color:Highlight !important;
+  
+  -moz-border-right-colors:Highlight !important;
+  -moz-border-left-colors:Highlight !important;
+} 
