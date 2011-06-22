@@ -1,0 +1,4 @@
+content tabmultiplehandler chrome/content/
+
+overlay chrome://komodo/content/komodo.xul chrome://tabmultiplehandler/content/tabmultiplehandler.xul
+style chrome://komodo/content/komodo.xul chrome://tabmultiplehandler/content/tabmultiplehandler.css
