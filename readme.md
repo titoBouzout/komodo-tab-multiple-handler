@@ -9,7 +9,7 @@ Usage is very simple, you just click and hold your mouse a little bit, the selec
 Version-changes:
 
 <ul> 0.1 - 
-<br/>https://github.com/titoBouzout/komodo-tab-multiple-handler/tree/fce239958f90c8721f2cc9613b31acc86c5b4ef4
+<br/>https://github.com/titoBouzout/komodo-tab-multiple-handler/tree/0.1
 <br/>http://community.activestate.com/files/tabMultipleHandler_0.xpi
   <li> Fix style for selected tabs on linux.
   <li> Allows select tabs from multiples browsers (tabbedViews)
