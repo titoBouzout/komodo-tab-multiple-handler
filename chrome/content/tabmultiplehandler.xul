@@ -45,7 +45,7 @@
 			document.removeEventListener('mousemove', titoTMH._selectingCancel, true);
 		  },
 		  _selectingStart:function()
-		  {
+		  {			
 			if(titoTMH._selectedFirstTab)
 			{
 			  titoTMH._selectedFirstTab.setAttribute('tab-multiple-handler-selected', true);
@@ -104,9 +104,10 @@
 			
 			if(titoTMH._selection.length)
 			{
+			  var aContextMenu = titoTMH._el('titoTMH');
 			  if(
 				 aEvent.originalTarget.parentNode &&
-				 aEvent.originalTarget.parentNode != titoTMH._el('titoTMH')
+				 aEvent.originalTarget.parentNode != aContextMenu
 			  )
 			  {
 				aEvent.stopPropagation();
@@ -114,46 +115,53 @@
 			  }
 			  
 			  var someDirty = 0;
+			  var thereIsContent = false;
 			  for(var id in titoTMH._selection)
 			  {
 				if(!titoTMH._selection[id])
 				  continue;
-				
+				thereIsContent = true;
 				if(titoTMH._selection[id].getAttribute('clean') == 'false')
-				{
 				  someDirty++;
-				}
 			  }
-			  if(someDirty > 0)
-				titoTMH._el('titoTMH').lastChild.removeAttribute('disabled');
-			  else
-				titoTMH._el('titoTMH').lastChild.setAttribute('disabled', true);
-			  
-			  if(someDirty == 1)
-				titoTMH._el('titoTMH').lastChild.setAttribute('label', 'Save the tab');
-			  else
-				titoTMH._el('titoTMH').lastChild.setAttribute('label', 'Save selected tabs');
+			  if(thereIsContent)
+			  {
+				if(someDirty > 0)
+				  aContextMenu.lastChild.removeAttribute('disabled');
+				else
+				  aContextMenu.lastChild.setAttribute('disabled', true);
 				
-			  var nonSelectedTabs = titoTMH.getNonSelectedTabs();
-			  if(nonSelectedTabs.length)
-				titoTMH._el('titoTMH').firstChild.nextSibling.removeAttribute('disabled');
-			  else
-				titoTMH._el('titoTMH').firstChild.nextSibling.setAttribute('disabled', true);
+				if(someDirty == 1)
+				  aContextMenu.lastChild.setAttribute('label', 'Save the tab');
+				else
+				  aContextMenu.lastChild.setAttribute('label', 'Save selected tabs');
+				  
+				var nonSelectedTabs = titoTMH.getNonSelectedTabs();
+				var selectedTabs = titoTMH.getSelectedTabs();
 				
-			  if(nonSelectedTabs.length == 1)
-				titoTMH._el('titoTMH').firstChild.nextSibling.setAttribute('label', 'Close the other tab');
+				if(nonSelectedTabs.length)
+				  aContextMenu.firstChild.nextSibling.removeAttribute('disabled');
+				else
+				  aContextMenu.firstChild.nextSibling.setAttribute('disabled', true);
+				  
+				if(nonSelectedTabs.length == 1)
+				  aContextMenu.firstChild.nextSibling.setAttribute('label', 'Close the other tab');
+				else
+				  aContextMenu.firstChild.nextSibling.setAttribute('label', 'Close other tabs');
+				  
+				if(selectedTabs.length == 1)
+				  aContextMenu.firstChild.setAttribute('label', 'Close the tab');
+				else
+				 aContextMenu.firstChild.setAttribute('label', 'Close selected tabs');
+  
+				aContextMenu.openPopupAtScreen(aEvent.screenX, aEvent.screenY, true);
+			  }
 			  else
-				titoTMH._el('titoTMH').firstChild.nextSibling.setAttribute('label', 'Close other tabs');
-				
-			  if(titoTMH._selection.length == 1)
-				titoTMH._el('titoTMH').firstChild.setAttribute('label', 'Close the tab');
-			  else
-				titoTMH._el('titoTMH').firstChild.setAttribute('label', 'Close selected tabs');
-
-			  titoTMH._el('titoTMH').openPopupAtScreen(aEvent.screenX, aEvent.screenY, true);
+			  {
+				titoTMH.clearSelection();
+			  }
 			}
 		  },
-		  
 		  clearSelection:function()
 		  {
 			for(var id in titoTMH._selection)
